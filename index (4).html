@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memorias Capacitación Contact Center</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: banda navy de encabezado + pestañas horizontales pegajosas; cada pestaña es una "ficha de consulta" densa para el asesor */
+:root{
+  --navy:#003085; --teal:#00A694; --teal-ink:#007a6d;
+  --bg:#f3f6fb; --surface:#ffffff; --surface-2:#eaf0f8;
+  --fg:#0f1b33; --muted:#55627a; --line:#d6dfec;
+  --warn:#b45309; --warn-bg:#fff4e0; --bad:#b42318; --bad-bg:#fdecea; --ok:#067a5b; --ok-bg:#e3f6ef;
+  --head-bg:#003085; --head-fg:#ffffff; --tab-active:#00A694;
+  --tuv:#1f5bd6; --cport:#00A694; --cprof:#7a3fd1;
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1222; --surface:#111c33; --surface-2:#172645; --fg:#e7edf8; --muted:#9aa8c2; --line:#24365a;
+  --teal-ink:#3fd2bf; --warn:#f5b454; --warn-bg:#2e2410; --bad:#ff8a80; --bad-bg:#341617; --ok:#5fd6a8; --ok-bg:#0f2c24;
+  --head-bg:#0b2257; --head-fg:#ffffff; --tuv:#6f9bff; --cport:#3fd2bf; --cprof:#b48cff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1222; --surface:#111c33; --surface-2:#172645; --fg:#e7edf8; --muted:#9aa8c2; --line:#24365a;
+  --teal-ink:#3fd2bf; --warn:#f5b454; --warn-bg:#2e2410; --bad:#ff8a80; --bad-bg:#341617; --ok:#5fd6a8; --ok-bg:#0f2c24;
+  --head-bg:#0b2257; --head-fg:#ffffff; --tuv:#6f9bff; --cport:#3fd2bf; --cprof:#b48cff; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--head-bg);color:var(--head-fg)}
+header.top .wrap{padding-block:20px 18px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:13px}
+.logo .mk{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--teal);clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);font-size:12px;color:#fff}
+.logo .sep{opacity:.5}
+h1{margin:10px 0 4px;font-size:clamp(22px,3.2vw,32px);line-height:1.15;font-weight:800;text-wrap:balance;letter-spacing:-.01em}
+.sub{opacity:.85;font-size:14px}
+.meta{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid rgba(255,255,255,.3);border-radius:999px;white-space:nowrap}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs button{font:600 14px var(--sans);color:var(--muted);background:none;border:0;padding:14px 14px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{color:var(--fg)}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--tab-active)}
+nav.tabs button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+main .wrap{padding-block:24px 40px}
+section.panel{display:grid;gap:20px}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-ink)}
+h2{margin:2px 0 0;font-size:22px;line-height:1.2;text-wrap:balance}
+h3{margin:0;font-size:16px}
+p{margin:0}
+.lead{color:var(--muted);max-width:68ch}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0;display:grid;gap:10px;align-content:start}
+.kpi{display:flex;gap:14px;align-items:flex-start}
+.kpi .ic{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);color:var(--teal-ink)}
+.kpi .n{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .l{color:var(--muted);font-size:13px;margin-top:4px}
+ul.clean{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+ul.clean li{display:flex;gap:10px;align-items:flex-start}
+ul.clean li::before{content:"";flex:none;width:7px;height:7px;margin-top:8px;background:var(--teal);clip-path:polygon(25% 0,100% 0,75% 100%,0 100%)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--fg);white-space:nowrap}
+.tag.ok{background:var(--ok-bg);color:var(--ok)} .tag.warn{background:var(--warn-bg);color:var(--warn)} .tag.bad{background:var(--bad-bg);color:var(--bad)}
+.ally{border-top:5px solid var(--c)}
+.ally .name{font-size:19px;font-weight:800;color:var(--c)}
+.ally dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.ally dt{color:var(--muted)} .ally dd{margin:0;font-weight:500}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+table.og td.y,table.og td.n{text-align:center;font-weight:700;vertical-align:middle}
+table.og td.y{color:var(--ok);font-size:17px}
+table.og td.n{color:var(--bad);font-size:13px}
+table.og th:not(:first-child){text-align:center}
+td .dot{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);margin-right:7px}
+.alert{border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;border:1px solid}
+.alert.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--fg)} .alert.bad b{color:var(--bad)}
+.alert.warn{background:var(--warn-bg);border-color:var(--warn)} .alert.warn b{color:var(--warn)}
+.alert.ok{background:var(--ok-bg);border-color:var(--ok)} .alert.ok b{color:var(--ok)}
+.alert svg{flex:none;margin-top:2px}
+/* ruta certiport */
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:0;counter-reset:st}
+.stage{position:relative;padding:20px 22px 20px 20px;background:var(--surface);border:1px solid var(--line);display:grid;gap:10px;align-content:start;min-width:0}
+.stage:first-child{border-radius:12px 0 0 12px}.stage:last-child{border-radius:0 12px 12px 0}
+.stage+.stage{border-left:0}
+.stage .num{font-family:var(--mono);font-size:12px;color:var(--teal-ink);font-weight:500}
+.stage h3{font-size:18px}
+.stage .plat{font-size:12px;color:var(--muted)}
+@media (max-width:820px){.stage,.stage:first-child,.stage:last-child{border-radius:12px}.stage+.stage{border-left:1px solid var(--line);margin-top:10px}}
+.score{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px}
+.bar{position:relative;height:10px;flex:1;border-radius:999px;background:linear-gradient(90deg,var(--bad) 0 70%,var(--ok) 70% 100%);opacity:.85}
+.bar i{position:absolute;left:70%;top:-5px;width:2px;height:20px;background:var(--fg)}
+.timeline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.timeline .pt{padding:6px 10px;border-radius:8px;background:var(--surface-2);font-family:var(--mono)}
+.timeline .ar{color:var(--muted)}
+/* script */
+.script{background:var(--surface-2);border-radius:12px;padding:16px 18px;display:grid;gap:8px}
+.script q{display:block;font-size:15.5px;font-weight:500;quotes:"“" "”"}
+.script .who{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.copy{justify-self:start;font:600 12.5px var(--sans);padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.copy:hover{border-color:var(--teal)}
+/* checklist */
+.check{display:grid;gap:8px}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--teal);width:16px;height:16px}
+.check input:checked+span{text-decoration:line-through;color:var(--muted)}
+/* faq */
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 18px}
+details summary{cursor:pointer;padding:15px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details summary::after{content:"+";font-family:var(--mono);color:var(--teal-ink);font-size:18px;line-height:1}
+details[open] summary::after{content:"–"}
+details .ans{padding:0 0 16px;color:var(--fg);display:grid;gap:8px}
+/* compromisos */
+.task{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--navy);color:#fff}
+.task .who{font-size:12.5px;color:var(--muted)}
+@media (max-width:560px){.task{grid-template-columns:auto 1fr}.task .tag{grid-column:2;justify-self:start}}
+/* people */
+.people{display:flex;flex-wrap:wrap;gap:8px}
+.person{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:13px}
+.person .avatar{width:26px;height:26px;font-size:11px}
+.person small{color:var(--muted)}
+/* quiz */
+.q{display:grid;gap:10px}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left;font:500 14.5px var(--sans);padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--teal)}
+.opts button.right{background:var(--ok-bg);border-color:var(--ok)}
+.opts button.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.opts button:disabled{cursor:default}
+.fb{font-size:14px;color:var(--muted)}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.progress{height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--teal);transition:width .3s}
+.btn{font:600 14px var(--sans);padding:10px 16px;border-radius:10px;border:0;background:var(--navy);color:#fff;cursor:pointer}
+.btn:focus-visible,.opts button:focus-visible,.copy:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+footer{border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{padding-block:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+footer b{color:var(--fg);letter-spacing:.08em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* portafolio */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{font:600 13px var(--sans);padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.cert{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.cert .al{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.cert h3{font-size:16px;line-height:1.3}
+.cert .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:13px}
+.cert .facts div{background:var(--surface-2);border-radius:8px;padding:7px 9px}
+.cert .facts small{display:block;color:var(--muted);font-size:11px}
+.cert .facts b{font-variant-numeric:tabular-nums}
+.cert .hr{font-size:13.5px}
+.cert details{border:0;padding:0;background:none}
+.cert details summary{padding:4px 0;font-size:13.5px;color:var(--teal-ink)}
+.cert details .ans{padding:4px 0 2px;font-size:14px}
+.cert details h4{margin:4px 0 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cert details ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.price{font-variant-numeric:tabular-nums;white-space:nowrap}
+/* do / dont */
+.dd{display:grid;gap:8px}
+.dd li{display:flex;gap:10px;align-items:flex-start;list-style:none}
+.dd{margin:0;padding:0}
+.dd .mk{flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-weight:800;font-size:13px}
+.dd.yes .mk{background:var(--ok-bg);color:var(--ok)}
+.dd.no .mk{background:var(--bad-bg);color:var(--bad)}
+.dd.warn .mk{background:var(--warn-bg);color:var(--warn)}
+.prof{display:grid;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.prof b{font-size:14.5px}
+.prof span{color:var(--muted);font-size:13px}
+.prof .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.contact{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.contact code{font-family:var(--mono);font-size:13.5px;padding:6px 10px;border-radius:8px;background:var(--surface-2);user-select:all}
+.gcards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.gcard .who{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-ink)}
+.gcard q{display:block;font-size:15px;line-height:1.55;quotes:"“" "”";padding:12px 14px;border-radius:10px;background:var(--surface-2)}
+#gfilters button,#filters button{}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="logo"><span class="mk">E</span>UNIMINUTO <span class="sep">|</span> Educación Continua</div>
+      <h1>Memorias de la capacitación al Contact Center</h1>
+      <p class="sub">Certificaciones internacionales, recibos de pago y novedades de la oferta EduCon</p>
+    </div>
+    <div class="meta">
+      <span class="chip">6 oct 2026</span>
+      <span class="chip">39 min</span>
+      <span class="chip">+ brief de campaña</span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Secciones">
+  <div class="wrap" role="tablist">
+    <button role="tab" aria-selected="true" data-t="resumen">Resumen</button>
+    <button role="tab" aria-selected="false" data-t="aliados">Aliados y opción de grado</button>
+    <button role="tab" aria-selected="false" data-t="portafolio">Portafolio · 15</button>
+    <button role="tab" aria-selected="false" data-t="certiport">Ruta Certiport</button>
+    <button role="tab" aria-selected="false" data-t="comunicar">Cómo comunicarlo</button>
+    <button role="tab" aria-selected="false" data-t="guiones">Guiones de venta</button>
+    <button role="tab" aria-selected="false" data-t="recibos">Recibos y pagos</button>
+    <button role="tab" aria-selected="false" data-t="faq">Preguntas frecuentes</button>
+    <button role="tab" aria-selected="false" data-t="quiz">Ponte a prueba</button>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<!-- RESUMEN -->
+<section class="panel" id="resumen">
+  <div>
+    <div class="eyebrow">En 1 minuto</div>
+    <h2>Lo que todo asesor debe saber</h2>
+  </div>
+  <div class="grid g4">
+    <div class="box kpi"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 22l5-3 5 3-1.5-9.5"/></svg></div><div><div class="n">15</div><div class="l">certificaciones con 3 aliados: TÜV Rheinland (6), Certiport (6) y CertiProf (3)</div></div></div>
+    <div class="box kpi"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M15 14.6c2.6-.3 5 1.2 6 4.4"/></svg></div><div><div class="n">15</div><div class="l">matriculados mínimo para abrir grupos en vivo (TÜV y CertiProf)</div></div></div>
+    <div class="box kpi"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="n">$700 mil – $2 M</div><div class="l">rango de inversión por certificación</div></div></div>
+    <div class="box kpi"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div><div><div class="n">4</div><div class="l">ciudades donde se ofrece Certiport: Bogotá, Barranquilla, Santa Marta y Cartagena</div></div></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="box">
+      <h3>Las ideas clave</h3>
+      <ul class="clean">
+        <li><span><b>Ninguna certificación exige ser experto.</b> Todas traen curso preparatorio, práctica para el examen (simulador en Certiport y CertiProf; ejercicios prácticos en clase en TÜV), examen y retoma.</span></li>
+        <li><span><b>El examen final lo es todo.</b> Sin examen aprobado no hay certificado, aunque haya asistido a todas las clases.</span></li>
+        <li><span><b>2 intentos y sin devolución.</b> Si pierde el examen y la retoma, no hay reembolso.</span></li>
+        <li><span><b>TÜV Rheinland y CertiProf son en vivo:</b> asistencia obligatoria y horario no modificable.</span></li>
+        <li><span><b>Certiport es autogestionado</b> y su examen es presencial solo en 4 ciudades. Nunca ofrecerlo en el resto del país.</span></li>
+        <li><span><b>Nada de promesas:</b> ni “certificación garantizada”, ni empleo, ni reconocimiento “en cualquier país”.</span></li>
+        <li><span><b>Recibos:</b> los datos incompletos (código postal, dirección, estrato) y los descuentos son la causa principal de que no lleguen o lleguen mal.</span></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Quiénes participaron</h3>
+      <div class="people">
+        <div class="person"><span class="avatar" style="background:var(--teal)">LH</span><span>Luisa María Huérfano Pérez <small>· facilitadora EduCon</small></span></div>
+        <div class="person"><span class="avatar">AH</span><span>Angie Tatiana Hernández Morales <small>· formación</small></span></div>
+        <div class="person"><span class="avatar">DD</span><span>Diana Mayerly Domínguez Puentes</span></div>
+        <div class="person"><span class="avatar">HB</span><span>Heidy Tatiana Baquero Toro</span></div>
+        <div class="person"><span class="avatar">SG</span><span>Sihara Daniela García Bautista</span></div>
+        <div class="person"><span class="avatar">CB</span><span>Carmen Elena Barón Pacheco</span></div>
+        <div class="person"><span class="avatar">SS</span><span>Sandra Milena Suárez Velosa</span></div>
+      </div>
+      <p class="lead" style="font-size:14px">Estas memorias combinan lo explicado en la sesión con el portafolio oficial y las reglas de comunicación de la campaña <b>“Haz visible tu talento”</b>.</p>
+      <div class="contact"><span style="font-size:13px;color:var(--muted)">Contacto EduCon</span><code>educacioncontinua@uniminuto.edu</code><code>316 288 8728</code></div>
+    </div>
+  </div>
+</section>
+
+<!-- ALIADOS -->
+<section class="panel" id="aliados" hidden>
+  <div>
+    <div class="eyebrow">Certificaciones internacionales</div>
+    <h2>Cada aliado funciona distinto. Explícalo así.</h2>
+  </div>
+  <div class="grid g3">
+    <div class="box ally" style="--c:var(--tuv)">
+      <div class="name">TÜV Rheinland</div>
+      <div><span class="tag">6 certificaciones ISO · Auditor interno</span></div>
+      <dl>
+        <dt>Modalidad</dt><dd>Sincrónica, clases en vivo mediadas por TIC</dd>
+        <dt>Duración</dt><dd>32 horas</dd>
+        <dt>Inversión</dt><dd class="price">$2.000.000</dd>
+        <dt>Cobertura</dt><dd>Nacional</dd>
+        <dt>Asistencia</dt><dd>Obligatoria. Máx. 1 falta; con 2 pierde la certificación</dd>
+        <dt>Práctica</dt><dd>Sin simulador: ejercicios prácticos en clase que simulan el examen</dd>
+        <dt>Inicio</dt><dd>Fecha fija, con mínimo 15 matriculados</dd>
+      </dl>
+    </div>
+    <div class="box ally" style="--c:var(--cport)">
+      <div class="name">Certiport · ETC LATAM</div>
+      <div><span class="tag">6 certificaciones · tecnología, negocio y creatividad</span></div>
+      <dl>
+        <dt>Modalidad</dt><dd>Autogestionable en plataforma, sin clases en vivo</dd>
+        <dt>Duración</dt><dd>40 horas</dd>
+        <dt>Inversión</dt><dd class="price">$1.553.000</dd>
+        <dt>Cobertura</dt><dd>Solo Bogotá, Barranquilla, Santa Marta y Cartagena</dd>
+        <dt>Examen</dt><dd>Presencial en la sede inscrita</dd>
+        <dt>Inicio</dt><dd>Sin mínimo. Licencia en 10 días hábiles, vigente 10 meses</dd>
+      </dl>
+    </div>
+    <div class="box ally" style="--c:var(--cprof)">
+      <div class="name">CertiProf</div>
+      <div><span class="tag">3 certificaciones · agilidad e innovación</span></div>
+      <dl>
+        <dt>Modalidad</dt><dd>Scrum: clases en vivo. Agile Coach y Design Thinking: examen y retoma, condiciones por confirmar</dd>
+        <dt>Duración</dt><dd>32 horas</dd>
+        <dt>Inversión</dt><dd class="price">Desde $700.000</dd>
+        <dt>Cobertura</dt><dd>Nacional</dd>
+        <dt>Inicio</dt><dd>Fecha fija, con mínimo 15 matriculados</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="alert bad"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 20h20L12 3zM12 10v4M12 17v.5"/></svg><div><b>Regla para los 3 aliados.</b> Todas terminan en examen final con retoma. Si pierde ambos intentos, pierde la certificación y no hay devolución de dinero: ya usó el curso y los recursos.</div></div>
+    <div class="alert ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Opción de grado.</b> Son programas libres y también sirven como opción de grado en las rectorías de la tabla. Mismo proceso de inscripción; el estudiante solicita la modalidad en Génesis.</div></div>
+  </div>
+
+  <div>
+    <div class="eyebrow" style="margin-bottom:8px">¿Dónde es válida como opción de grado?</div>
+    <div class="tbl">
+      <table class="og">
+        <thead><tr><th>Aliado</th><th>Bogotá</th><th>Cundinamarca</th><th>Boyacá</th><th>Caribe</th><th>Occidente</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot" style="--c:var(--cprof)"></span><b>CertiProf</b><br><small style="color:var(--muted)">Scrum · Agile Coach · Design Thinking</small></td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td><span class="dot" style="--c:var(--tuv)"></span><b>TÜV Rheinland</b><br><small style="color:var(--muted)">ISO 55001 · 27001 · 39001 · 28000 · 9001 · Trinorma</small></td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td><span class="dot" style="--c:var(--cport)"></span><b>Certiport</b><br><small style="color:var(--muted)">IA · Python · Project Management · Meta · Cybersecurity · Adobe</small></td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">No</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-top:8px">Para Certiport, recuerda que el examen es presencial solo en Bogotá, Barranquilla, Santa Marta y Cartagena. En las demás rectorías las certificaciones son programas libres, no opción de grado.</p>
+  </div>
+</section>
+
+<!-- PORTAFOLIO -->
+<section class="panel" id="portafolio" hidden>
+  <div>
+    <div class="eyebrow">Portafolio completo</div>
+    <h2>Las 15 certificaciones, con su ficha</h2>
+    <p class="lead">Filtra por aliado y abre la ficha para ver perfil y contenido. Horarios, inversión y condiciones pueden cambiar según el ente certificador.</p>
+  </div>
+  <div class="filters" id="filters">
+    <button aria-pressed="true" data-f="all">Todas · 15</button>
+    <button aria-pressed="false" data-f="tuv">TÜV Rheinland · 6</button>
+    <button aria-pressed="false" data-f="cport">Certiport · 6</button>
+    <button aria-pressed="false" data-f="cprof">CertiProf · 3</button>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<!-- CERTIPORT -->
+<section class="panel" id="certiport" hidden>
+  <div>
+    <div class="eyebrow">La más difícil de explicar</div>
+    <h2>Ruta Certiport en 3 plataformas</h2>
+    <p class="lead">Certiport no tiene profesor ni clases en vivo. El estudiante avanza solo por tres plataformas del aliado, en este orden. Al pagar, en 10 días hábiles recibe un correo con usuario, contraseña y videos guía.</p>
+  </div>
+  <div class="route">
+    <div class="stage">
+      <div class="num">PLATAFORMA 1</div>
+      <h3>Curso preparatorio</h3>
+      <div class="plat">Autogestionable, 40 horas, sin horario</div>
+      <p>Ve la temática a su ritmo. Ejemplo: “me inscribí a Python y le dedico los domingos de 12 a 5 p. m.” o “toda la semana de 6 a 9 p. m.”.</p>
+    </div>
+    <div class="stage">
+      <div class="num">PLATAFORMA 2</div>
+      <h3>Simulador</h3>
+      <div class="plat">Tiene 3 partes</div>
+      <ul class="clean">
+        <li><span><b>Guía de estudio:</b> la revisa las veces que quiera.</span></li>
+        <li><span><b>Examen de práctica:</b> sin tiempo; puede pausar y volver.</span></li>
+        <li><span><b>Examen tipo real:</b> cronometrado, con intentos limitados. Muestra en qué está fallando.</span></li>
+      </ul>
+    </div>
+    <div class="stage">
+      <div class="num">PLATAFORMA 3</div>
+      <h3>Examen final</h3>
+      <div class="plat">Presencial en Bogotá, Barranquilla, Santa Marta o Cartagena</div>
+      <div class="score"><span>0</span><span class="bar"><i></i></span><span>1000</span></div>
+      <p>Aprueba con <b>700 o más</b>. El certificado y el reporte salen automáticos. Con 699 el sistema marca pérdida y no se puede ajustar a mano.</p>
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="box">
+      <h3>Si pierde el primer intento</h3>
+      <div class="timeline"><span class="pt">Mar 11:15 a. m. · pierde</span><span class="ar">→ 24 h →</span><span class="pt">Mié 11:15 a. m. · retoma</span></div>
+      <p style="color:var(--muted);font-size:14px">La retoma se activa sola 24 horas después. EduCon no puede adelantarla ni modificar la nota.</p>
+    </div>
+    <div class="box">
+      <h3>Vigencia de la licencia</h3>
+      <p><span class="tag warn">10 meses</span> desde que se envían los accesos. Si no avanza en ese tiempo, pierde la licencia. TÜV y CertiProf no vencen así porque tienen fecha de inicio y fin.</p>
+    </div>
+    <div class="box">
+      <h3>Caso Adobe</h3>
+      <p>Debe escoger <b>una sola versión</b>: Photoshop, InDesign, Illustrator, After Effects, Animate, Premiere Pro o Dreamweaver.</p>
+    </div>
+  </div>
+
+  <div class="alert warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg><div><b>Recomiéndalo siempre:</b> que hagan los simuladores a conciencia. Quienes llegan solo con el curso preparatorio no conocen la metodología del examen y se quedan sin tiempo. El simulador no repite las preguntas, pero es la mejor práctica.</div></div>
+
+  <div class="script">
+    <div class="who">Guion sugerido</div>
+    <q id="s1">Esta certificación es autogestionada: no tiene profesor ni clases en vivo. Al pagar, en unos 10 días hábiles te llegan los accesos a tres plataformas: el curso preparatorio de 40 horas, el simulador y el examen final, que presentas de forma presencial en Bogotá, Barranquilla, Santa Marta o Cartagena. Tienes 10 meses para completarla y necesitas 700 puntos para aprobar.</q>
+    <button class="copy" data-copy="s1">Copiar guion</button>
+  </div>
+</section>
+
+<!-- COMUNICAR -->
+<section class="panel" id="comunicar" hidden>
+  <div>
+    <div class="eyebrow">Campaña “Haz visible tu talento”</div>
+    <h2>Qué decir, qué aclarar y qué nunca prometer</h2>
+    <p class="lead">El talento ya existe; la certificación es la forma estructurada de demostrarlo y respaldarlo ante empleadores, organizaciones y clientes. Sin prometer resultados laborales ni de aprobación.</p>
+  </div>
+  <div class="grid g3">
+    <div class="box">
+      <h3>Siempre menciona</h3>
+      <ul class="dd yes">
+        <li><span class="mk">✓</span><span>Para Certiport: examen presencial únicamente en Bogotá, Barranquilla, Santa Marta y Cartagena.</span></li>
+        <li><span class="mk">✓</span><span>Cada grupo abre con mínimo 15 personas matriculadas.</span></li>
+        <li><span class="mk">✓</span><span>Horarios, inversión y condiciones pueden cambiar según el ente certificador.</span></li>
+        <li><span class="mk">✓</span><span>Incluye curso preparatorio, práctica (simulador en Certiport y CertiProf; ejercicios prácticos en clase en TÜV), examen y retoma sujeta a condiciones del aliado.</span></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Aclara antes de inscribir</h3>
+      <ul class="dd warn">
+        <li><span class="mk">!</span><span>La asistencia es obligatoria en las certificaciones en vivo: se permite máximo 1 falta; con 2 se pierde la certificación.</span></li>
+        <li><span class="mk">!</span><span>Si no aprueba el examen final, pierde la certificación aunque haya asistido a todo.</span></li>
+        <li><span class="mk">!</span><span>El horario establecido no se puede modificar.</span></li>
+        <li><span class="mk">!</span><span>Si pierde examen y retoma, no hay devolución de dinero.</span></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Nunca digas</h3>
+      <ul class="dd no">
+        <li><span class="mk">✕</span><span>“Certificación garantizada” o “aprobación asegurada”.</span></li>
+        <li><span class="mk">✕</span><span>Promesas de empleo, salario, ascenso o trabajo en el exterior.</span></li>
+        <li><span class="mk">✕</span><span>Que se reconoce “en cualquier país” o “en todo el mundo”.</span></li>
+        <li><span class="mk">✕</span><span>“Retoma gratis” o “ilimitada”.</span></li>
+        <li><span class="mk">✕</span><span>Que Certiport tiene clases en vivo o que está disponible en todo el país.</span></li>
+        <li><span class="mk">✕</span><span>“Últimos cupos” cuando no es cierto.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="eyebrow" style="margin-bottom:8px">¿Qué le recomiendo? Según el perfil de quien llama</div>
+    <div class="grid g3" style="gap:10px">
+      <div class="prof"><b>Profesional en ejercicio</b><span>25–45 · quiere ascender, cambiar de empresa o fortalecer su perfil</span><div class="tags"><span class="tag">ISO 9001</span><span class="tag">Trinorma</span><span class="tag">ISO 27001</span><span class="tag">Project Management</span><span class="tag">Agile Coach</span></div></div>
+      <div class="prof"><b>Perfil tecnológico</b><span>22–40 · validar habilidades en IA, programación o seguridad</span><div class="tags"><span class="tag">Artificial Intelligence</span><span class="tag">Python</span><span class="tag">Cybersecurity</span><span class="tag">ISO 27001</span></div></div>
+      <div class="prof"><b>Creativo o de marketing</b><span>20–40 · respaldar herramientas y capacidades</span><div class="tags"><span class="tag">Adobe</span><span class="tag">Meta</span><span class="tag">Design Thinking</span></div></div>
+      <div class="prof"><b>Independiente o emprendedor</b><span>25–50 · diferenciarse frente a clientes y proyectos</span><div class="tags"><span class="tag">Meta</span><span class="tag">Design Thinking</span><span class="tag">Scrum</span><span class="tag">Project Management</span></div></div>
+      <div class="prof"><b>Técnico, tecnólogo o recién egresado</b><span>20–30 · entrar al mercado con una credencial diferenciadora</span><div class="tags"><span class="tag">Scrum</span><span class="tag">Python</span><span class="tag">ISO 9001</span><span class="tag">ISO 39001</span></div></div>
+      <div class="prof"><b>Logística, operaciones, SST y activos</b><span>28–50 · fortalecer competencias de auditoría y gestión</span><div class="tags"><span class="tag">ISO 28000</span><span class="tag">ISO 55001</span><span class="tag">ISO 39001</span><span class="tag">Trinorma</span></div></div>
+      <div class="prof"><b>Estudiante universitario</b><span>Complementar su perfil; en UNIMINUTO, cuando aplique, como opción de grado</span><div class="tags"><span class="tag ok">Revisa la tabla de opción de grado</span></div></div>
+    </div>
+  </div>
+
+  <div class="script">
+    <div class="who">Guion de apertura</div>
+    <q id="s3">Tú ya tienes el talento y la experiencia. Con esta certificación te preparas, practicas para el examen y presentas el examen con el aliado certificador para respaldar esa competencia en tu perfil profesional.</q>
+    <button class="copy" data-copy="s3">Copiar guion</button>
+  </div>
+</section>
+
+<!-- GUIONES -->
+<section class="panel" id="guiones" hidden>
+  <div>
+    <div class="eyebrow">Guiones de venta</div>
+    <h2>Ejemplos listos para llamar y escribir</h2>
+    <p class="lead">Reemplaza lo que está entre [corchetes]. Todos respetan las reglas de la campaña: sin promesas de empleo, aprobación ni cupos falsos.</p>
+  </div>
+  <div class="filters" id="gfilters"><button aria-pressed="true" data-g="all">Todos</button><button aria-pressed="false" data-g="apertura">Apertura</button><button aria-pressed="false" data-g="descubrir">Preguntas para descubrir</button><button aria-pressed="false" data-g="pitch">Presentación por aliado</button><button aria-pressed="false" data-g="objeciones">Manejo de objeciones</button><button aria-pressed="false" data-g="cierre">Cierre</button><button aria-pressed="false" data-g="seguimiento">Seguimiento y pago</button></div>
+  <div class="gcards" id="gcards">
+    <div class="gcard" data-g="apertura"><div class="who">Apertura</div><h3>Llamada a un lead nuevo</h3><q id="g1">¡Hola, [nombre]! Te habla [tu nombre] de Educación Continua UNIMINUTO. Vi que te interesó la certificación en [certificación] y quiero contarte en dos minutos cómo funciona para que veas si encaja contigo. ¿Tienes un momento?</q><button class="copy" data-copy="g1">Copiar guion</button></div>
+    <div class="gcard" data-g="apertura"><div class="who">Apertura</div><h3>Concepto de campaña</h3><q id="g2">[Nombre], tú ya tienes el conocimiento y la experiencia. Lo que hace esta certificación es ayudarte a demostrarlo con el respaldo de un aliado certificador internacional, para que lo puedas mostrar en tu hoja de vida y ante empleadores o clientes.</q><button class="copy" data-copy="g2">Copiar guion</button></div>
+    <div class="gcard" data-g="apertura"><div class="who">Apertura</div><h3>Lead que llega por WhatsApp</h3><q id="g3">¡Hola, [nombre]! 👋 Qué bueno que te interese certificarte en [certificación]. Para recomendarte la mejor opción, cuéntame: ¿a qué te dedicas hoy y para qué te gustaría usar la certificación?</q><button class="copy" data-copy="g3">Copiar guion</button></div>
+    <div class="gcard" data-g="descubrir"><div class="who">Preguntas para descubrir</div><h3>Entender su motivación</h3><q id="g4">¿Qué te gustaría lograr con esta certificación: fortalecer tu perfil en tu empresa actual, buscar una nueva oportunidad o diferenciarte con tus clientes?</q><button class="copy" data-copy="g4">Copiar guion</button></div>
+    <div class="gcard" data-g="descubrir"><div class="who">Preguntas para descubrir</div><h3>Validar disponibilidad</h3><q id="g5">¿Cómo tienes tu tiempo? ¿Te funciona más tener clases en vivo con un tutor en un horario fijo, o prefieres avanzar a tu ritmo en una plataforma?</q><button class="copy" data-copy="g5">Copiar guion</button></div>
+    <div class="gcard" data-g="descubrir"><div class="who">Preguntas para descubrir</div><h3>Validar ciudad (clave para Certiport)</h3><q id="g6">¿Desde qué ciudad nos acompañas? Te pregunto porque algunas certificaciones tienen el examen presencial y solo se ofrecen en Bogotá, Barranquilla, Santa Marta y Cartagena.</q><button class="copy" data-copy="g6">Copiar guion</button></div>
+    <div class="gcard" data-g="descubrir"><div class="who">Preguntas para descubrir</div><h3>¿Es estudiante UNIMINUTO?</h3><q id="g7">¿Eres estudiante de UNIMINUTO? Te pregunto porque, según tu rectoría, esta certificación también te puede servir como opción de grado.</q><button class="copy" data-copy="g7">Copiar guion</button></div>
+    <div class="gcard" data-g="pitch"><div class="who">Presentación por aliado</div><h3>TÜV Rheinland · ISO</h3><q id="g8">Esta es una certificación como Auditor Interno [ISO] avalada por TÜV Rheinland. Son 32 horas de clases en vivo con tutor, en horario [horario], y al final presentas el examen de certificación. Durante las clases haces ejercicios prácticos que simulan el examen, así que llegas bien preparado. La inversión es de $2.000.000.</q><button class="copy" data-copy="g8">Copiar guion</button></div>
+    <div class="gcard" data-g="pitch"><div class="who">Presentación por aliado</div><h3>Certiport · tecnología</h3><q id="g9">Con Certiport certificas tus habilidades en [IA / Python / Cybersecurity]. Es 100 % a tu ritmo: tienes un curso preparatorio de 40 horas, un simulador para practicar y luego presentas el examen de forma presencial. Tienes 10 meses para completarla y la inversión es de $1.553.000.</q><button class="copy" data-copy="g9">Copiar guion</button></div>
+    <div class="gcard" data-g="pitch"><div class="who">Presentación por aliado</div><h3>Certiport · negocio y creatividad</h3><q id="g10">Si trabajas con [Meta / Adobe / gestión de proyectos], esta certificación te permite demostrar con un respaldo internacional lo que ya sabes hacer. Te preparas en la plataforma a tu ritmo, practicas en el simulador y presentas el examen presencial. Inversión: $1.553.000.</q><button class="copy" data-copy="g10">Copiar guion</button></div>
+    <div class="gcard" data-g="pitch"><div class="who">Presentación por aliado</div><h3>CertiProf · agilidad</h3><q id="g11">Scrum es de las metodologías más usadas en equipos de trabajo hoy. Con CertiProf tienes 32 horas de clases en vivo, simulador para practicar y examen de certificación, desde $700.000. Es una de las formas más accesibles de certificar competencias ágiles.</q><button class="copy" data-copy="g11">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“Está muy caro”</h3><q id="g12">Te entiendo. Piensa que en una sola inversión tienes el curso preparatorio, la práctica para el examen, el examen de certificación y una retoma si la necesitas. Si quieres, revisamos juntos cuál opción del portafolio se ajusta mejor a tu presupuesto; tenemos certificaciones desde $700.000.</q><button class="copy" data-copy="g12">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“No tengo tiempo”</h3><q id="g13">Justo por eso existen dos formatos. Si tu agenda es muy cambiante, Certiport te deja avanzar a tu ritmo durante 10 meses, sin horario. Si prefieres que alguien te acompañe, TÜV Rheinland tiene horarios nocturnos o de fin de semana. ¿Cuál se acomoda más a tu rutina?</q><button class="copy" data-copy="g13">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“¿Y si pierdo el examen?”</h3><q id="g14">Es una muy buena pregunta. Tienes un segundo intento. Por eso te recomiendo aprovechar al máximo la práctica: quienes hacen los simuladores o los ejercicios de clase a conciencia llegan mucho más seguros al examen. Eso sí, te soy transparente: si pierdes los dos intentos no hay devolución, así que vale la pena prepararse bien.</q><button class="copy" data-copy="g14">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“¿Me sirve para conseguir trabajo?”</h3><q id="g15">La certificación te da una forma concreta de demostrar tus competencias y hacerlas visibles en tu hoja de vida y tu perfil profesional. Lo que logres con ella depende de ti, pero sin duda es un respaldo que te diferencia.</q><button class="copy" data-copy="g15">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“No vivo en esas ciudades” (Certiport)</h3><q id="g16">Las certificaciones Certiport tienen examen presencial y por ahora solo se presentan en Bogotá, Barranquilla, Santa Marta y Cartagena. Pero no te preocupes: con TÜV Rheinland y CertiProf tienes opciones 100 % en vivo desde cualquier ciudad. Por lo que me cuentas, te recomendaría [certificación].</q><button class="copy" data-copy="g16">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“¿Es reconocida en otros países?”</h3><q id="g17">Es una certificación internacional respaldada por [aliado], uno de los entes certificadores especializados en este campo. El alcance específico depende de cada sector y empleador, así que te recomiendo validarlo según tu objetivo.</q><button class="copy" data-copy="g17">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“Déjame pensarlo”</h3><q id="g18">¡Claro! Para que lo pienses con toda la información, te envío ahora mismo por WhatsApp la ficha con horario, contenido e inversión. ¿Te parece si te llamo el [día] para resolver cualquier duda que te quede?</q><button class="copy" data-copy="g18">Copiar guion</button></div>
+    <div class="gcard" data-g="objeciones"><div class="who">Manejo de objeciones</div><h3>“No sé si tengo el nivel”</h3><q id="g19">No necesitas ser experto. Cada certificación incluye un curso preparatorio que te lleva paso a paso hasta el examen. Si ya trabajas en [área], vas a tener una gran ventaja.</q><button class="copy" data-copy="g19">Copiar guion</button></div>
+    <div class="gcard" data-g="cierre"><div class="who">Cierre</div><h3>Cierre directo</h3><q id="g20">Entonces, [nombre], por lo que me cuentas, [certificación] es la que mejor se ajusta a lo que buscas. ¿Te parece si hacemos de una vez la inscripción? Solo necesito confirmar unos datos para que te llegue tu recibo de pago.</q><button class="copy" data-copy="g20">Copiar guion</button></div>
+    <div class="gcard" data-g="cierre"><div class="who">Cierre</div><h3>Urgencia real (en vivo)</h3><q id="g21">Te cuento algo importante: el grupo abre cuando completamos 15 personas matriculadas, y el horario ya está definido. Si te inscribes ahora aseguras tu lugar y te avisamos apenas se confirme el inicio.</q><button class="copy" data-copy="g21">Copiar guion</button></div>
+    <div class="gcard" data-g="cierre"><div class="who">Cierre</div><h3>Cierre Certiport</h3><q id="g22">Lo bueno de Certiport es que no tienes que esperar un grupo: apenas pagues, en unos 10 días hábiles te llegan tus accesos y empiezas. ¿Lo dejamos listo hoy?</q><button class="copy" data-copy="g22">Copiar guion</button></div>
+    <div class="gcard" data-g="cierre"><div class="who">Cierre</div><h3>Opción de grado</h3><q id="g23">Como eres estudiante de la rectoría [rectoría], esta certificación te sirve como opción de grado. Hacemos la inscripción normal y tú solo debes solicitar la modalidad en Génesis. ¿Avanzamos?</q><button class="copy" data-copy="g23">Copiar guion</button></div>
+    <div class="gcard" data-g="seguimiento"><div class="who">Seguimiento y pago</div><h3>WhatsApp después de la llamada</h3><q id="g24">¡Hola, [nombre]! Gracias por tu tiempo hoy 🙌 Te comparto la información de [certificación]: [horario / modalidad], inversión [valor]. Recuerda que el examen final es lo que define tu certificación, así que te acompañamos para que llegues bien preparado. ¿Te ayudo con la inscripción?</q><button class="copy" data-copy="g24">Copiar guion</button></div>
+    <div class="gcard" data-g="seguimiento"><div class="who">Seguimiento y pago</div><h3>Recibo que no llega</h3><q id="g25">¡Hola, [nombre]! Para que no esperes el correo, puedes entrar a la zona de pagos con tu documento y tu fecha de nacimiento. En “Recibos generados” das clic en Consultar y pagas por PSE. Si aún no aparece, avísame y lo solicito de inmediato.</q><button class="copy" data-copy="g25">Copiar guion</button></div>
+    <div class="gcard" data-g="seguimiento"><div class="who">Seguimiento y pago</div><h3>Recibo sin descuento</h3><q id="g26">Es posible que el primer recibo te llegue sin el descuento. No te preocupes: nosotros solicitamos el ajuste y te llegará un segundo recibo con el valor correcto. Paga el que tiene el descuento.</q><button class="copy" data-copy="g26">Copiar guion</button></div>
+    <div class="gcard" data-g="seguimiento"><div class="who">Seguimiento y pago</div><h3>Bienvenida Certiport</h3><q id="g27">¡Bienvenido/a, [nombre]! En unos 10 días hábiles te llegará un correo con usuario, contraseña y videos guía de las 3 plataformas. Un consejo de oro: haz los simuladores a conciencia antes del examen. ¡Vas a lograrlo!</q><button class="copy" data-copy="g27">Copiar guion</button></div>
+  </div>
+  <div class="alert ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Tip de oro:</b> escucha primero, recomienda después. Una certificación que encaja con el perfil y la ciudad de la persona se vende sola; una que no encaja termina en queja o en pérdida del examen.</div></div>
+</section>
+
+<!-- RECIBOS -->
+<section class="panel" id="recibos" hidden>
+  <div>
+    <div class="eyebrow">Facturación</div>
+    <h2>Por qué no llega el recibo y qué hacer</h2>
+    <p class="lead">El recibo debería llegar automático al inscribir. Cuando faltan datos básicos, Banner no pasa al estudiante a SAP y SAP no deja facturar.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Caso</th><th>Qué pasa</th><th>Qué hace el asesor</th></tr></thead>
+      <tbody>
+        <tr><td><b>Datos incompletos</b><br><span class="tag bad">Sin código postal, dirección o estrato</span></td><td>Banner no lo pasa a SAP y no se puede facturar</td><td>Diligenciar completos todos los datos al inscribir</td></tr>
+        <tr><td><b>Doble currícula con correo errado</b></td><td>El sistema envía el recibo al primer correo, aunque luego se corrija en CRM o Banner</td><td>Pedir el recibo por el grupo de EduCon para ese estudiante</td></tr>
+        <tr><td><b>Descuento (egresado u otro)</b></td><td>Casi nunca se carga solo; el recibo sale a precio full</td><td>Pedir el ajuste por el grupo una vez el estudiante esté admitido, y avisarle</td></tr>
+        <tr><td><b>Datos completos y aun así no llega</b></td><td>Caso en revisión técnica</td><td>Reportar por el grupo; se escaló al encargado del sistema</td></tr>
+        <tr><td><b>No aparece en la zona de pagos</b></td><td>El recibo venció o nunca se generó</td><td>Solicitar un nuevo recibo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="box">
+      <h3>Checklist antes de cerrar la inscripción</h3>
+      <div class="check">
+        <label><input type="checkbox" id="c1"><span>Correo correcto (revisar “.com”, dominio y tildes)</span></label>
+        <label><input type="checkbox" id="c2"><span>Fecha de nacimiento correcta (la usa para entrar a pagar)</span></label>
+        <label><input type="checkbox" id="c3"><span>Dirección y código postal</span></label>
+        <label><input type="checkbox" id="c4"><span>Estrato</span></label>
+        <label><input type="checkbox" id="c5"><span>¿Tiene descuento? Reportarlo por el grupo</span></label>
+        <label><input type="checkbox" id="c6"><span>¿Opción de grado? Confirmar rectoría y recordarle la solicitud en Génesis</span></label>
+        <label><input type="checkbox" id="c7"><span>¿Certiport? Confirmar que presentará el examen en Bogotá, Barranquilla, Santa Marta o Cartagena</span></label>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Zona de pagos, paso a paso</h3>
+      <ul class="clean">
+        <li><span>Entra como <b>nuevo, antiguo, estudiante o egresado</b>.</span></li>
+        <li><span>Se identifica con <b>documento de identidad y fecha de nacimiento</b>.</span></li>
+        <li><span>En <b>Recibos generados → Consultar</b> aparece el programa (p. ej. “Python”) y paga por <b>PSE</b>.</span></li>
+        <li><span>Si ve <b>dos recibos</b> (uno full y otro con descuento), paga el que tiene descuento.</span></li>
+      </ul>
+      <p style="color:var(--muted);font-size:14px">Úsala si pasaron unos 3 días sin recibo: si ya está generado, el estudiante paga de una vez y no lo perdemos.</p>
+    </div>
+  </div>
+
+  <div class="script">
+    <div class="who">Guion sugerido · descuentos</div>
+    <q id="s2">Es posible que el primer recibo te llegue sin el descuento. No te preocupes: nosotros solicitamos el ajuste y te llegará un segundo recibo con el valor correcto. Paga el que tiene el descuento.</q>
+    <button class="copy" data-copy="s2">Copiar guion</button>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="panel" id="faq" hidden>
+  <div>
+    <div class="eyebrow">Preguntas del equipo</div>
+    <h2>Lo que preguntaron en la sesión</h2>
+  </div>
+  <div class="grid" style="gap:10px">
+    <details open><summary>¿El estudiante necesita conocimientos previos para certificarse?</summary><div class="ans"><p>No. Cada certificación trae su curso preparatorio. El asesor tampoco necesita dominar el temario; las fichas del portafolio tienen el perfil y los contenidos de referencia.</p></div></details>
+    <details><summary>¿Cuánto cuesta y cuánto dura?</summary><div class="ans"><p><b>TÜV Rheinland:</b> $2.000.000 · 32 h en vivo. <b>Certiport:</b> $1.553.000 · 40 h autogestionables. <b>CertiProf:</b> desde $700.000 · 32 h.</p></div></details>
+    <details><summary>¿Alguna sirve como opción de grado?</summary><div class="ans"><p><b>CertiProf y TÜV Rheinland:</b> Bogotá, Cundinamarca, Boyacá, Caribe y Occidente. <b>Certiport:</b> Bogotá, Cundinamarca, Boyacá y Caribe (no en Occidente).</p><p>La inscripción y el recibo son iguales; el estudiante solicita la modalidad de opción de grado en Génesis.</p></div></details>
+    <details><summary>Llaman de Medellín o Cali interesados en Python. ¿Se puede?</summary><div class="ans"><p>No. Certiport solo se ofrece en Bogotá, Barranquilla, Santa Marta y Cartagena porque el examen es presencial allí. Ofrécele una opción de cobertura nacional de TÜV Rheinland o CertiProf según su perfil.</p></div></details>
+    <details><summary>¿Cuándo inicia mi certificación?</summary><div class="ans"><p><b>TÜV Rheinland y CertiProf:</b> cuando se completen 15 matriculados. <b>Certiport:</b> no tiene fecha; a los 10 días hábiles de pagar llegan los accesos.</p></div></details>
+    <details><summary>¿Puedo faltar a alguna clase o cambiar el horario?</summary><div class="ans"><p>Solo una. La asistencia es obligatoria y el ente certificador es muy estricto: con 2 faltas se pierde la certificación automáticamente. El horario establecido tampoco se puede modificar.</p></div></details>
+    <details><summary>Perdí el examen dos veces, ¿me devuelven el dinero?</summary><div class="ans"><p>No. El estudiante ya tomó el curso y los recursos. Por eso hay que dejar claro desde la venta que el examen final define el certificado.</p></div></details>
+    <details><summary>¿La certificación sirve en otros países?</summary><div class="ans"><p>No prometas reconocimiento “en cualquier país”. Di que es una certificación internacional respaldada por el aliado certificador.</p></div></details>
+    <details><summary>Saqué 699 en Certiport, ¿me lo pueden subir?</summary><div class="ans"><p>No. El sistema lo marca como pérdida de forma automática. La retoma se habilita sola 24 horas después.</p></div></details>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="panel" id="quiz" hidden>
+  <div>
+    <div class="eyebrow">Autoevaluación</div>
+    <h2>Ponte a prueba</h2>
+    <p class="lead">Ocho preguntas rápidas con casos reales de llamada.</p>
+  </div>
+  <div class="box q" id="qbox" style="max-width:760px">
+    <div class="qhead"><span class="tag" id="qcount">Pregunta 1 de 8</span><span class="tag ok" id="qscore">0 aciertos</span></div>
+    <div class="progress"><i id="qbar" style="width:0%"></i></div>
+    <h3 id="qtext" style="font-size:17px"></h3>
+    <div class="opts" id="qopts"></div>
+    <p class="fb" id="qfb"></p>
+    <button class="btn" id="qnext" hidden>Siguiente</button>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer><div class="wrap"><span>EduCon UNIMINUTO · Con UNIMINUTO elige mover tu mundo · Información de referencia; valida con Educación Continua</span><b>VIGILADA MINEDUCACIÓN</b></div></footer>
+
+<script>
+(function(){
+  const tabs=[...document.querySelectorAll('nav.tabs button')];
+  const panels=[...document.querySelectorAll('section.panel')];
+  function show(id){
+    tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));
+    panels.forEach(p=>p.hidden=p.id!==id);
+    try{localStorage.setItem('mem-tab',id)}catch(e){}
+  }
+  tabs.forEach(b=>b.addEventListener('click',()=>{show(b.dataset.t);window.scrollTo({top:0})}));
+  let start='resumen';
+  try{start=localStorage.getItem('mem-tab')||start}catch(e){}
+  const h=(location.hash||'').slice(1);
+  if(panels.some(p=>p.id===h))start=h;
+  if(!panels.some(p=>p.id===start))start='resumen';
+  show(start);
+
+  /* Portafolio */
+  const TUV={k:'tuv',n:'TÜV Rheinland',mod:'En vivo',h:'32 h',p:'$2.000.000',cov:'Nacional'};
+  const CP={k:'cport',n:'Certiport',mod:'Autogestionable',h:'40 h',p:'$1.553.000',cov:'Bogotá, Barranquilla, Santa Marta y Cartagena',hr:'Según disponibilidad del examen'};
+  const PF={k:'cprof',n:'CertiProf',mod:'En vivo',h:'32 h',p:'$700.000',cov:'Nacional',hr:'Según disponibilidad del examen'};
+  const C=[
+    [TUV,'Auditor Interno ISO 55001 · Gestión de Activos','Miércoles y viernes, 6:00 – 10:00 p. m.',['Profesionales en ingeniería, mantenimiento, finanzas o gestión de activos','Auditores interesados en implementar ISO 55001','Consultores en optimización de activos'],['Principios y fundamentos de ISO 55001','Auditoría de sistemas de gestión de activos','Implementación de ISO 55001','Optimización, evaluación y mejora continua']],
+    [TUV,'Auditor Interno ISO 27001 · Seguridad de la Información','Sábados 1:00 – 5:00 p. m. y domingos 9:00 a. m. – 1:00 p. m.',['Profesionales en tecnología, ciberseguridad y análisis de datos','Auditores internos en seguridad de la información','Especialistas en datos'],['Fundamentos de ISO 27001 y gestión de riesgos','Auditoría de seguridad de la información','Implementación de controles y políticas','Ciberseguridad aplicada']],
+    [TUV,'Auditor Interno ISO 39001 · Seguridad Vial','Miércoles y viernes, 6:00 – 10:00 p. m.',['Profesionales en transporte, seguridad vial o movilidad','Auditores interesados en ISO 39001','Líderes de proyectos en movilidad segura'],['Fundamentos y requisitos de ISO 39001','Auditoría de seguridad vial','Indicadores y métricas','Buenas prácticas en movilidad segura']],
+    [TUV,'Auditor Interno ISO 28000 · Seguridad en Cadena de Suministro','Lunes y viernes, 6:00 – 10:00 p. m.',['Profesionales en logística, operaciones y cadenas de suministro','Auditores interesados en ISO 28000','Líderes que gestionan riesgos de suministro'],['Fundamentos de ISO 28000','Auditoría de cadena de suministro','Gestión de riesgos','Buenas prácticas de seguridad logística']],
+    [TUV,'Sistemas de Gestión de Calidad ISO 9001','Miércoles y viernes, 6:00 – 10:00 p. m.',['Profesionales en calidad y procesos','Psicólogos organizacionales y talento humano','Líderes y auditores interesados en ISO 9001'],['Principios de la gestión de la calidad','Auditoría de sistemas de calidad','Implementación de ISO 9001','Gestión por procesos y enfoque al cliente','Mejora continua e indicadores (KPI)']],
+    [TUV,'Auditor Integral Trinorma · ISO 9001, 14001 y 45001','Miércoles y viernes, 6:00 – 10:00 p. m.',['Líderes y auditores de sistemas integrados de gestión','Gerentes HSEQ','Consultores en gestión integral'],['Fundamentos de calidad, ambiente y seguridad','Auditoría integral con enfoque en procesos','Implementación del sistema integrado HSEQ','Mejora continua e indicadores (KPI)']],
+    [CP,'Artificial Intelligence','',['Estudiantes y profesionales interesados en programación, datos y desarrollo de software'],['Fundamentos y definición de problemas con IA','Preparación de datos','Algoritmos y modelos','Integración y despliegue','Monitoreo e impacto']],
+    [CP,'Python','',['Profesionales interesados en uso práctico de IA, estudiantes de tecnología y emprendedores'],['Fundamentos y tipos de datos','Control de flujo y bucles','Entrada y salida de datos','Estructura y documentación','Depuración y pruebas','Módulos y librerías']],
+    [CP,'Project Management Institute','',['Profesionales en gestión de proyectos, líderes de equipo y coordinadores'],['Fundamentos de gestión de proyectos','Inicio','Planeación','Ejecución y control','Cierre']],
+    [CP,'Meta','',['Profesionales en ciencias económicas, administrativas y afines'],['Valor de las tecnologías Meta','Presencia digital','Fundamentos de publicidad digital','Creación y gestión de anuncios','Medición y reportes']],
+    [CP,'Cybersecurity','',['Profesionales y estudiantes interesados en proteger datos y sistemas','Quienes quieren entrar a la seguridad informática'],['Principios de ciberseguridad','Seguridad de redes','Seguridad en dispositivos','Vulnerabilidades y riesgo','Incidentes y recuperación']],
+    [CP,'Adobe Certified Professional','',['Personas creativas en diseño gráfico, multimedia y edición digital'],['Escoge solo una versión: Photoshop, InDesign, Illustrator, After Effects, Animate, Premiere Pro o Dreamweaver','Cada una con simulador y examen (Photoshop, InDesign e Illustrator incluyen plataforma XED)']],
+    [PF,'Scrum · Metodologías ágiles','',['Profesionales y estudiantes que quieren dominar prácticas ágiles','Equipos que buscan colaboración y autogestión'],['Scrum Developer (SDPC)','Scrum Advanced (SAPC)','Scaled Scrum (SSPC)']],
+    [Object.assign({},PF,{mod:'Examen y retoma',p:'Desde $700.000'}),'Agile Coach','Condiciones por confirmar',['Líderes de equipo, coordinadores, gestores de proyectos, consultores y emprendedores'],['Fundamentos de agilidad','Rol y herramientas del Agile Coach','Facilitación de equipos','Liderazgo y gestión del cambio','Cultura ágil']],
+    [Object.assign({},PF,{mod:'Examen y retoma',p:'Desde $700.000'}),'Design Thinking','Condiciones por confirmar',['Profesionales, líderes, consultores y emprendedores interesados en innovación'],['Empatía y comprensión de necesidades','Definición de problemas','Ideación','Prototipado','Validación y experimentación']]
+  ];
+  const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  document.getElementById('cards').innerHTML=C.map(([a,name,hr,perf,cont])=>`
+    <article class="cert" data-k="${a.k}" style="--c:var(--${a.k})">
+      <div class="al">${a.n}</div>
+      <h3>${esc(name)}</h3>
+      <div class="facts"><div><small>Modalidad</small><b>${a.mod}</b></div><div><small>Duración</small><b>${a.h}</b></div><div><small>Inversión</small><b class="price">${a.p}</b></div></div>
+      <div class="hr"><b>Horario:</b> ${esc(hr||a.hr)}</div>
+      <div>${a.k==='cport'?'<span class="tag warn">Solo 4 ciudades</span>':'<span class="tag ok">Cobertura nacional</span>'}</div>
+      <details><summary>Ver ficha</summary><div class="ans">
+        <h4>Perfil</h4><ul>${perf.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul>
+        <h4>Contenido</h4><ul>${cont.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul>
+      </div></details>
+    </article>`).join('');
+  const fb=[...document.querySelectorAll('#filters button')];
+  fb.forEach(b=>b.addEventListener('click',()=>{
+    fb.forEach(x=>x.setAttribute('aria-pressed',x===b));
+    document.querySelectorAll('.cert').forEach(c=>c.hidden=!(b.dataset.f==='all'||c.dataset.k===b.dataset.f));
+  }));
+
+  const gb=[...document.querySelectorAll('#gfilters button')];
+  gb.forEach(b=>b.addEventListener('click',()=>{
+    gb.forEach(x=>x.setAttribute('aria-pressed',x===b));
+    document.querySelectorAll('.gcard').forEach(c=>c.hidden=!(b.dataset.g==='all'||c.dataset.g===b.dataset.g));
+  }));
+
+  document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',()=>{
+    const el=document.getElementById(btn.dataset.copy);const txt=el.textContent;
+    const done=()=>{btn.textContent='Copiado';setTimeout(()=>btn.textContent='Copiar guion',1600)};
+    const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Texto seleccionado'};
+    try{navigator.clipboard.writeText(txt).then(done,sel)}catch(e){sel()}
+  }));
+
+  /* Quiz */
+  const Q=[
+    {q:'Un interesado en ISO 27001 con TÜV Rheinland pregunta si puede faltar a dos sesiones por viaje.',o:['Sí, puede ver las grabaciones','No: solo se permite 1 falta; con 2 pierde la certificación','Sí, si avisa con anticipación'],a:1,f:'TÜV Rheinland es en vivo y muy estricto con la asistencia. El horario tampoco se puede cambiar.'},
+    {q:'Llama alguien de Medellín interesado en la certificación de Python. ¿Qué haces?',o:['Lo inscribes; es virtual','Le explicas que Certiport solo se ofrece en Bogotá, Barranquilla, Santa Marta y Cartagena y le ofreces una opción nacional','Le dices que viaje a presentar el examen'],a:1,f:'El examen Certiport es presencial solo en esas 4 ciudades. TÜV Rheinland y CertiProf tienen cobertura nacional.'},
+    {q:'¿Cuánto cuesta una certificación de TÜV Rheinland?',o:['$700.000','$1.553.000','$2.000.000'],a:2,f:'TÜV Rheinland: $2.000.000 y 32 h. Certiport: $1.553.000 y 40 h. CertiProf: desde $700.000.'},
+    {q:'Un estudiante sacó 699 en el examen Certiport. ¿Qué le dices?',o:['Que pedimos ajustar la nota','Que la retoma se habilita sola 24 horas después','Que debe pagar de nuevo de inmediato'],a:1,f:'El sistema marca la pérdida automáticamente y activa la retoma a las 24 horas.'},
+    {q:'¿Cuál de estas frases SÍ puedes decir?',o:['“Con esta certificación consigues trabajo en el exterior”','“La aprobación está garantizada”','“Te preparas, practicas para el examen y presentas el examen con el aliado certificador”'],a:2,f:'Nunca prometas empleo, aprobación ni reconocimiento en cualquier país.'},
+    {q:'Una persona quiere la certificación Adobe y pregunta si incluye Photoshop e Illustrator.',o:['Sí, incluye todas las herramientas','Debe escoger solo una versión','Solo incluye Premiere Pro'],a:1,f:'En Adobe Certified Professional se escoge una sola versión de aprendizaje.'},
+    {q:'Un egresado recibe su recibo a precio full. ¿Qué haces?',o:['Le dices que el descuento no aplica','Solicitas el ajuste por el grupo y le explicas que llegará otro recibo con descuento','Lo inscribes de nuevo'],a:1,f:'El descuento casi nunca se carga solo; se ajusta manualmente al facturar.'},
+    {q:'Un estudiante de la Rectoría Occidente quiere usar Python (Certiport) como opción de grado.',o:['Sí aplica, solo debe solicitarla en Génesis','En Occidente Certiport no es opción de grado; sí lo son CertiProf y TÜV Rheinland','Ninguna certificación aplica en Occidente'],a:1,f:'Certiport es opción de grado en Bogotá, Cundinamarca, Boyacá y Caribe.'}
+  ];
+  let i=0,score=0;
+  const $=id=>document.getElementById(id);
+  function render(){
+    const it=Q[i];
+    $('qcount').textContent='Pregunta '+(i+1)+' de '+Q.length;
+    $('qbar').style.width=(i/Q.length*100)+'%';
+    $('qtext').textContent=it.q;$('qfb').textContent='';$('qnext').hidden=true;
+    const box=$('qopts');box.innerHTML='';
+    it.o.forEach((t,k)=>{const b=document.createElement('button');b.textContent=t;b.addEventListener('click',()=>pick(k,b));box.appendChild(b)});
+  }
+  function pick(k,b){
+    const it=Q[i];const bs=[...$('qopts').children];
+    bs.forEach(x=>x.disabled=true);bs[it.a].classList.add('right');
+    if(k===it.a){score++;$('qfb').textContent='Correcto. '+it.f}else{b.classList.add('wrong');$('qfb').textContent='No exactamente. '+it.f}
+    $('qscore').textContent=score+(score===1?' acierto':' aciertos');
+    $('qnext').textContent=i<Q.length-1?'Siguiente':'Ver resultado';$('qnext').hidden=false;
+  }
+  let finished=false;
+  $('qnext').addEventListener('click',()=>{
+    if(finished){finished=false;i=0;score=0;$('qscore').textContent='0 aciertos';render();return}
+    if(i<Q.length-1){i++;render();return}
+    finished=true;
+    $('qbar').style.width='100%';$('qcount').textContent='Resultado';
+    $('qtext').textContent=score+' de '+Q.length+(score===Q.length?' · ¡Listo para salir a llamar!':score>=6?' · Muy bien, repasa lo que fallaste.':' · Vale la pena repasar las pestañas.');
+    $('qopts').innerHTML='';$('qfb').textContent='';
+    $('qnext').textContent='Volver a empezar';
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
