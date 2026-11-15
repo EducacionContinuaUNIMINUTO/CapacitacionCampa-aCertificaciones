@@ -28,10 +28,10 @@ window.__fill=async(slug)=>{
   log.push(__ck('body[0][value]',D.body),__setv('short_descripcion_block[0][value]',D.why),__ck('description_programs[0][value]',D.about),__ck('description_objetives[0][value]',D.obj),__ck('description_content[0][value]',D.cont));
   __setv('title_block[0][value]','¿Por qué estudiar?');__setv('generic_title[0][value]','Acerca de la certificación');__setv('about_subtitle[0][value]','Presentación');
   __setv('title_objetive[0][value]','Objetivos');__setv('subtitle_objetives[0][value]',D.subt_obj);__setv('title_content[0][value]','Contenido');__setv('subtitle_content[0][value]',D.subt_cont);
-  const pa=document.querySelector('[name="path[0][pathauto]"]');if(pa&&!pa.checked){pa.checked=true;pa.dispatchEvent(new Event('change',{bubbles:true}))}
+  const pa=document.querySelector('[name="path[0][pathauto]"]');if(pa&&pa.checked){pa.checked=false;pa.dispatchEvent(new Event('change',{bubbles:true}))}__setv('path[0][alias]',D.alias);
   const sh=document.querySelector('[name="show_home[value]"]');if(sh)sh.checked=false;
   __setv('moderation_state[0][state]','published');
-  for(const [f,file] of Object.entries(D.imgs)){log.push(f+':'+await __img(f,file,D.name));}
+  if(!window.__textOnly){for(const [f,file] of Object.entries(D.imgs)){log.push(f+':'+await __img(f,file,D.name));}}
   return log;
 };
 window.__start=(slug)=>{window.__res=null;__fill(slug).then(r=>window.__res=r).catch(e=>window.__res='ERR '+e.message);return 'started'};
