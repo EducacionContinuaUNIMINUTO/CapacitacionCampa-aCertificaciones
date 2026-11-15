@@ -17,7 +17,7 @@ window.__img=async(field,file,alt)=>{
 };
 window.__fill=async(slug)=>{
   const D=(await (await fetch(__RAW+'data.json?'+Date.now())).json())[slug];
-  await __waitFor(()=>window.Drupal&&Drupal.CKEditor5Instances&&Drupal.CKEditor5Instances.size>=5);
+  await __waitFor(()=>window.Drupal&&Drupal.CKEditor5Instances&&Drupal.CKEditor5Instances.size>=4);
   const log=[];
   __setv('title[0][value]',D.title);__setv('type_of_programs','150');__setv('rectory','224');__setv('modality',D.modality);
   __setv('hours_or_credits[0][value]',D.hours);__setv('official_price[0][value]',D.price);__setv('official_price_usd[0][value]','');
@@ -25,7 +25,7 @@ window.__fill=async(slug)=>{
   __setv('general_description[0][value]',D.general);__setv('certificacion_otorgada[0][value]',D.cert);
   __setv('short_code[0][value]','');__setv('period[0][value]','');
   __setv('body[0][summary]',D.summary);
-  log.push(__ck('body[0][value]',D.body),__ck('short_descripcion_block[0][value]',D.why),__ck('description_programs[0][value]',D.about),__ck('description_objetivos[0][value]',D.obj),__ck('description_objetives[0][value]',D.obj),__ck('description_content[0][value]',D.cont));
+  log.push(__ck('body[0][value]',D.body),__setv('short_descripcion_block[0][value]',D.why),__ck('description_programs[0][value]',D.about),__ck('description_objetivos[0][value]',D.obj),__ck('description_objetives[0][value]',D.obj),__ck('description_content[0][value]',D.cont));
   __setv('title_block[0][value]','¿Por qué estudiar?');__setv('generic_title[0][value]','Acerca de la certificación');__setv('about_subtitle[0][value]','Presentación');
   __setv('title_objetive[0][value]','Objetivos');__setv('subtitle_objetives[0][value]',D.subt_obj);__setv('title_content[0][value]','Contenido');__setv('subtitle_content[0][value]',D.subt_cont);
   const pa=document.querySelector('[name="path[0][pathauto]"]');if(pa&&!pa.checked){pa.checked=true;pa.dispatchEvent(new Event('change',{bubbles:true}))}
