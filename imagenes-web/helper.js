@@ -10,7 +10,12 @@ window.__img=async(field,file,alt)=>{
   const b=await (await fetch(__RAW+file)).blob();
   const dt=new DataTransfer();dt.items.add(new File([b],file,{type:'image/jpeg'}));inp.files=dt.files;
   inp.dispatchEvent(new Event('change',{bubbles:true}));
-  await __waitFor(()=>{const f=document.querySelector(`[name="${field}[0][fids]"]`);return f&&f.value&&document.querySelector(`[name="${field}_0_remove_button"]`)},60000);
+  const done=()=>{const f=document.querySelector(`[name="${field}[0][fids]"]`);return f&&f.value&&document.querySelector(`[name="${field}_0_remove_button"]`)};
+  try{await __waitFor(done,9000)}catch(e){
+    for(let k=0;k<3&&!done();k++){const i2=document.querySelector(`[name="files[${field}_0]"]`);if(i2){if(!i2.files.length){const d2=new DataTransfer();d2.items.add(new File([b],file,{type:'image/jpeg'}));i2.files=d2.files;}const up=document.querySelector(`[name="${field}_0_upload_button"]`);if(up)up.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));else i2.dispatchEvent(new Event('change',{bubbles:true}));}
+      try{await __waitFor(done,10000)}catch(e2){}}
+    if(!done())throw new Error('upload '+field);
+  }
   const err=document.querySelector(`[data-drupal-selector="edit-${field.replace(/_/g,'-')}-wrapper"] .messages--error, .form-item--error-message`);
   __setv(`${field}[0][alt]`,alt);__setv(`${field}[0][title]`,alt);
   return document.querySelector(`[name="${field}[0][fids]"]`).value+(err?' ERR:'+err.textContent.trim().slice(0,120):'');
