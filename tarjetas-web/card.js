@@ -14,16 +14,16 @@ adobe:[7675023,'Adobe Certified','Professional','#E6007E'],
 scrum:[39204846,'Scrum','Metodologías ágiles','#FF8A00'],
 agile:[18999464,'Agile','Coach','#FF8A00'],
 design:[4623496,'Design','Thinking','#FF8A00']};
-window.__makeCard=async(slug)=>{const [pid,t1,t2,acc]=__CARDS[slug]; await document.fonts.load('700 24px MontBold'); await document.fonts.load('24px MontHeavy');
+window.__makeCard=async(slug)=>{const [pid,t1,t2,acc]=__CARDS[slug]; if(!window.__fl){const a=new FontFace('CardBold','url(/themes/custom/educon/src/assets/fonts/Mont-Bold.otf)'),b=new FontFace('CardHeavy','url(/themes/custom/educon/src/assets/fonts/Mont-Heavy.otf)');await Promise.all([a.load(),b.load()]);document.fonts.add(a);document.fonts.add(b);window.__fl=1;}
  const blob=await (await fetch(`https://images.pexels.com/photos/${pid}/pexels-photo-${pid}.jpeg?auto=compress&cs=tinysrgb&w=1000`)).blob(); const img=await createImageBitmap(blob);
  const W=400,H=350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const s=Math.max(W/img.width,H/img.height),dw=img.width*s,dh=img.height*s; x.drawImage(img,(W-dw)*0.6,(H-dh)*0.35,dw,dh);
  let g=x.createLinearGradient(0,0,W*0.85,0);g.addColorStop(0,'rgba(0,48,133,0.92)');g.addColorStop(0.45,'rgba(0,48,133,0.55)');g.addColorStop(1,'rgba(0,48,133,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
  g=x.createRadialGradient(40,300,0,40,300,200);g.addColorStop(0,acc+'99');g.addColorStop(1,acc+'00');x.fillStyle=g;x.fillRect(0,0,W,H);
  x.fillStyle='rgba(255,255,255,.35)';for(let i=0;i<5;i++)for(let j=0;j<4;j++){x.beginPath();x.arc(300+i*16,250+j*16,1.8,0,7);x.fill();}
- x.font='800 11px MontBold';const pill='CERTIFICACIÓN INTERNACIONAL';const pw=x.measureText(pill).width+22;x.fillStyle='#CDEB00';x.beginPath();x.roundRect(22,64,pw,24,12);x.fill();x.fillStyle='#111827';x.textBaseline='middle';x.fillText(pill,33,76.5);
+ x.font='11px CardBold';const pill='CERTIFICACIÓN INTERNACIONAL';const pw=x.measureText(pill).width+22;x.fillStyle='#CDEB00';x.beginPath();x.roundRect(22,64,pw,24,12);x.fill();x.fillStyle='#111827';x.textBaseline='middle';x.fillText(pill,33,76.5);
  x.fillStyle='#FFFFFF';x.textBaseline='alphabetic';const wrap=(t,f,y,lh,maxW)=>{x.font=f;const ws=t.split(' ');let line='',yy=y;for(const w of ws){const tt=line?line+' '+w:w;if(x.measureText(tt).width>maxW&&line){x.fillText(line,22,yy);line=w;yy+=lh}else line=tt}x.fillText(line,22,yy);return yy};
- let y=wrap(t1,'30px MontHeavy',128,32,240); x.fillStyle=acc==='#2EC7E6'?'#2EC7E6':(acc==='#E6007E'?'#FF7AC0':'#FFB04D'); y=wrap(t2,'20px MontBold',y+28,24,240);
+ let y=wrap(t1,'30px CardHeavy',128,32,240); x.fillStyle=acc==='#2EC7E6'?'#2EC7E6':(acc==='#E6007E'?'#FF7AC0':'#FFB04D'); y=wrap(t2,'20px CardBold',y+28,24,240);
  x.fillStyle=acc;x.fillRect(22,y+16,54,5);
  return await new Promise(r=>c.toBlob(r,'image/jpeg',0.9));};
 window.__swapCard=async(slug)=>{const field='image_non_formal';const file=slug+'_tarjeta_400x350_foto.jpg';const b=await __makeCard(slug);
