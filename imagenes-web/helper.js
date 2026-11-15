@@ -6,7 +6,7 @@ window.__ck=(n,html)=>{const ta=document.querySelector(`[name="${n}"]`);const id
 window.__img=async(field,file,alt)=>{
   const rm=document.querySelector(`[name="${field}_0_remove_button"]`);
   if(rm){rm.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));await __waitFor(()=>document.querySelector(`[name="files[${field}_0]"]`));}
-  const inp=await __waitFor(()=>document.querySelector(`[name="files[${field}_0]"]`));
+  const inp=await __waitFor(()=>document.querySelector(`[name="files[${field}_0]"]`));await __sleep(1800);
   const b=await (await fetch(__RAW+file)).blob();
   const dt=new DataTransfer();dt.items.add(new File([b],file,{type:'image/jpeg'}));inp.files=dt.files;
   inp.dispatchEvent(new Event('change',{bubbles:true}));
@@ -34,3 +34,5 @@ window.__fill=async(slug)=>{
   for(const [f,file] of Object.entries(D.imgs)){log.push(f+':'+await __img(f,file,D.name));}
   return log;
 };
+window.__start=(slug)=>{window.__res=null;__fill(slug).then(r=>window.__res=r).catch(e=>window.__res='ERR '+e.message);return 'started'};
+window.__imgs=async(slug,skip=[])=>{const D=(await (await fetch(__RAW+'data.json')).json())[slug];const log=[];for(const [f,file] of Object.entries(D.imgs)){if(skip.includes(f))continue;log.push(f+':'+await __img(f,file,D.name));}return log};
