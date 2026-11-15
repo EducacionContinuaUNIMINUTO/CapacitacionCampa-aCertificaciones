@@ -2,7 +2,7 @@ window.__RAW='https://raw.githubusercontent.com/EducacionContinuaUNIMINUTO/capac
 window.__sleep=ms=>new Promise(r=>setTimeout(r,ms));
 window.__waitFor=async(fn,t=30000)=>{const s=Date.now();while(Date.now()-s<t){try{const v=fn();if(v)return v}catch(e){}await __sleep(300)}throw new Error('timeout')};
 window.__setv=(n,v)=>{const e=document.querySelector(`[name="${n}"]`);if(!e)return false;e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));return true};
-window.__ck=(n,html)=>{const ta=document.querySelector(`[name="${n}"]`);const id=ta&&ta.getAttribute('data-ckeditor5-id');const ed=id&&Drupal.CKEditor5Instances.get(id);if(ed){ed.setData(html);}ta.value=html;return !!ed};
+window.__ck=(n,html)=>{const ta=document.querySelector(`[name="${n}"]`);const id=ta&&ta.getAttribute('data-ckeditor5-id');const ed=id&&Drupal.CKEditor5Instances.get(id);if(!ta)return 'noTA';if(ed){ed.setData(html);}ta.value=html;return !!ed};
 window.__img=async(field,file,alt)=>{
   const rm=document.querySelector(`[name="${field}_0_remove_button"]`);
   if(rm){rm.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));await __waitFor(()=>document.querySelector(`[name="files[${field}_0]"]`));}
@@ -25,7 +25,7 @@ window.__fill=async(slug)=>{
   __setv('general_description[0][value]',D.general);__setv('certificacion_otorgada[0][value]',D.cert);
   __setv('short_code[0][value]','');__setv('period[0][value]','');
   __setv('body[0][summary]',D.summary);
-  log.push(__ck('body[0][value]',D.body),__setv('short_descripcion_block[0][value]',D.why),__ck('description_programs[0][value]',D.about),__ck('description_objetivos[0][value]',D.obj),__ck('description_objetives[0][value]',D.obj),__ck('description_content[0][value]',D.cont));
+  log.push(__ck('body[0][value]',D.body),__setv('short_descripcion_block[0][value]',D.why),__ck('description_programs[0][value]',D.about),__ck('description_objetives[0][value]',D.obj),__ck('description_content[0][value]',D.cont));
   __setv('title_block[0][value]','¿Por qué estudiar?');__setv('generic_title[0][value]','Acerca de la certificación');__setv('about_subtitle[0][value]','Presentación');
   __setv('title_objetive[0][value]','Objetivos');__setv('subtitle_objetives[0][value]',D.subt_obj);__setv('title_content[0][value]','Contenido');__setv('subtitle_content[0][value]',D.subt_cont);
   const pa=document.querySelector('[name="path[0][pathauto]"]');if(pa&&!pa.checked){pa.checked=true;pa.dispatchEvent(new Event('change',{bubbles:true}))}
